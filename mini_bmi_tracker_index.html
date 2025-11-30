@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>迷你健康追蹤工具 - BMI 紀錄</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f5f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      margin: 24px;
+      width: 100%;
+      max-width: 960px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      padding: 24px 24px 32px;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: 1.5rem;
+    }
+
+    .subtitle {
+      margin: 0 0 16px;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: flex-end;
+    }
+
+    .field {
+      flex: 1 1 160px;
+      min-width: 140px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+      color: #374151;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input[type="number"]:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
+    }
+
+    .unit {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-left: 4px;
+    }
+
+    button {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #recordBtn {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 5px 12px rgba(37, 99, 235, 0.35);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+    }
+
+    #recordBtn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 7px 16px rgba(37, 99, 235, 0.45);
+    }
+
+    #recordBtn:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .current-box {
+      margin-top: 8px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f3f4ff;
+      border: 1px solid #e0e7ff;
+      font-size: 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .current-box span {
+      margin-right: 8px;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .badge-normal {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .section-title {
+      margin-top: 24px;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-title small {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      font-weight: normal;
+    }
+
+    .chart-wrapper {
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+      background: #f9fafb;
+    }
+
+    #bmiChart {
+      width: 100%;
+      max-height: 260px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 0.85rem;
+    }
+
+    thead {
+      background: #f3f4f6;
+    }
+
+    th, td {
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      white-space: nowrap;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f9fafb;
+    }
+
+    .empty-tip {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 12px;
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>迷你健康追蹤工具</h1>
+    <p class="subtitle">輸入身高與體重，一鍵計算 BMI 並記錄最近 30 筆歷史資料。</p>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="height">身高 <span class="unit">(cm)</span></label>
+        <input type="number" id="height" min="50" max="250" step="0.1" placeholder="例如：165" />
+      </div>
+      <div class="field">
+        <label for="weight">體重 <span class="unit">(kg)</span></label>
+        <input type="number" id="weight" min="10" max="300" step="0.1" placeholder="例如：60" />
+      </div>
+      <div class="field" style="flex: 0 0 auto;">
+        <button id="recordBtn" type="button">📌 紀錄</button>
+      </div>
+    </div>
+
+    <div id="currentInfo" class="current-box">
+      <span>目前尚未有紀錄，請先輸入數值後按「紀錄」。</span>
+    </div>
+
+    <h2 class="section-title">BMI 變化圖 <small>最近 30 筆</small></h2>
+    <div class="chart-wrapper">
+      <canvas id="bmiChart" width="800" height="260"></canvas>
+      <div id="chartEmpty" class="empty-tip">尚無資料，圖表將在有紀錄後自動更新。</div>
+    </div>
+
+    <h2 class="section-title">歷史紀錄 <small>最近 30 筆（新到舊）</small></h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>時間</th>
+            <th>身高 (cm)</th>
+            <th>體重 (kg)</th>
+            <th>BMI</th>
+            <th>狀態</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+      <div id="historyEmpty" class="empty-tip">尚無任何紀錄。</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const STORAGE_KEY = "mini_bmi_records";
+
+      const heightInput = document.getElementById("height");
+      const weightInput = document.getElementById("weight");
+      const recordBtn = document.getElementById("recordBtn");
+      const currentInfo = document.getElementById("currentInfo");
+      const historyBody = document.getElementById("historyBody");
+      const historyEmpty = document.getElementById("historyEmpty");
+      const chartEmpty = document.getElementById("chartEmpty");
+      const chartCanvas = document.getElementById("bmiChart");
+      const ctx = chartCanvas.getContext("2d");
+
+      function loadRecords() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+          return parsed;
+        } catch (e) {
+          console.error("loadRecords error", e);
+          return [];
+        }
+      }
+
+      function saveRecords(records) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+        } catch (e) {
+          console.error("saveRecords error", e);
+        }
+      }
+
+      function classifyBMI(bmi) {
+        if (bmi < 18.5) {
+          return { label: "體重過輕", level: "low" };
+        } else if (bmi < 24) {
+          return { label: "正常範圍", level: "normal" };
+        } else if (bmi < 27) {
+          return { label: "過重", level: "warning" };
+        } else {
+          return { label: "肥胖", level: "danger" };
+        }
+      }
+
+      function formatDate(isoString) {
+        const d = new Date(isoString);
+        if (Number.isNaN(d.getTime())) return "--";
+        return d.toLocaleString("zh-TW", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function renderCurrent(records) {
+        if (!records.length) {
+          currentInfo.innerHTML = "<span>目前尚未有紀錄，請先輸入數值後按「紀錄」。</span>";
+          return;
+        }
+        const latest = records[records.length - 1];
+        const bmiClass = classifyBMI(latest.bmi);
+
+        let badgeClass = "badge-normal";
+        if (bmiClass.level === "warning") badgeClass = "badge-warning";
+        if (bmiClass.level === "danger") badgeClass = "badge-danger";
+
+        const message =
+          bmiClass.level === "normal"
+            ? "BMI 在國家標準正常範圍內 (18.5–24)。"
+            : "BMI 超出國家標準正常範圍 (18.5–24)，建議留意飲食與運動。";
+
+        currentInfo.innerHTML =
+          `<span>最近一次紀錄時間：${formatDate(latest.timestamp)}</span>` +
+          `<span>身高：${latest.height.toFixed(1)} cm，體重：${latest.weight.toFixed(1)} kg</span>` +
+          `<span>目前 BMI：<strong>${latest.bmi.toFixed(2)}</strong></span>` +
+          `<span class="badge ${badgeClass}">${bmiClass.label}</span>` +
+          `<span style="flex-basis: 100%; font-size: 0.8rem; color: #6b7280; margin-top: 4px;">${message}</span>`;
+      }
+
+      function renderHistory(records) {
+        historyBody.innerHTML = "";
+        if (!records.length) {
+          historyEmpty.style.display = "block";
+          return;
+        }
+        historyEmpty.style.display = "none";
+
+        const reversed = [...records].reverse();
+        const rows = reversed
+          .map((r) => {
+            const bmiClass = classifyBMI(r.bmi);
+            let badgeClass = "badge-normal";
+            if (bmiClass.level === "warning") badgeClass = "badge-warning";
+            if (bmiClass.level === "danger") badgeClass = "badge-danger";
+            return `
+              <tr>
+                <td>${formatDate(r.timestamp)}</td>
+                <td>${r.height.toFixed(1)}</td>
+                <td>${r.weight.toFixed(1)}</td>
+                <td>${r.bmi.toFixed(2)}</td>
+                <td><span class="badge ${badgeClass}">${bmiClass.label}</span></td>
+              </tr>
+            `;
+          })
+          .join("");
+        historyBody.innerHTML = rows;
+      }
+
+      function clearChart() {
+        ctx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
+      }
+
+      function renderChart(records) {
+        clearChart();
+        if (!records.length) {
+          chartEmpty.style.display = "block";
+          return;
+        }
+        chartEmpty.style.display = "none";
+
+        const data = records.map((r) => r.bmi);
+        const n = data.length;
+        const padding = 30;
+        const width = chartCanvas.width;
+        const height = chartCanvas.height;
+
+        let minY = Math.min(...data);
+        let maxY = Math.max(...data);
+        if (minY === maxY) {
+          minY -= 1;
+          maxY += 1;
+        }
+        const range = maxY - minY;
+        minY = Math.floor(minY - range * 0.1);
+        maxY = Math.ceil(maxY + range * 0.1);
+
+        function xScale(i) {
+          if (n === 1) return padding + (width - 2 * padding) / 2;
+          return padding + (i * (width - 2 * padding)) / (n - 1);
+        }
+
+        function yScale(v) {
+          return height - padding - ((v - minY) * (height - 2 * padding)) / (maxY - minY);
+        }
+
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#d1d5db";
+        ctx.beginPath();
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, height - padding);
+        ctx.lineTo(width - padding, height - padding);
+        ctx.stroke();
+
+        ctx.font = "10px system-ui";
+        ctx.fillStyle = "#9ca3af";
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+
+        const ticks = 4;
+        for (let i = 0; i <= ticks; i++) {
+          const value = minY + ((maxY - minY) * i) / ticks;
+          const y = yScale(value);
+          ctx.fillText(value.toFixed(1), padding - 4, y);
+          ctx.strokeStyle = "#e5e7eb";
+          ctx.beginPath();
+          ctx.moveTo(padding, y);
+          ctx.lineTo(width - padding, y);
+          ctx.stroke();
+        }
+
+        ctx.strokeStyle = "#2563eb";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        data.forEach((v, i) => {
+          const x = xScale(i);
+          const y = yScale(v);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        ctx.fillStyle = "#2563eb";
+        data.forEach((v, i) => {
+          const x = xScale(i);
+          const y = yScale(v);
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        const normalMin = 18.5;
+        const normalMax = 24;
+        if (normalMin > minY && normalMin < maxY) {
+          ctx.strokeStyle = "#22c55e";
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.moveTo(padding, yScale(normalMin));
+          ctx.lineTo(width - padding, yScale(normalMin));
+          ctx.stroke();
+        }
+        if (normalMax > minY && normalMax < maxY) {
+          ctx.strokeStyle = "#22c55e";
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.moveTo(padding, yScale(normalMax));
+          ctx.lineTo(width - padding, yScale(normalMax));
+          ctx.stroke();
+        }
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = "#6b7280";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText("紀錄順序（舊 → 新）", width / 2, height - padding + 6);
+      }
+
+      function refreshUI(records) {
+        renderCurrent(records);
+        renderHistory(records);
+        renderChart(records);
+      }
+
+      function handleRecord() {
+        const h = parseFloat(heightInput.value);
+        const w = parseFloat(weightInput.value);
+
+        if (!h || !w || h <= 0 || w <= 0) {
+          alert("請輸入正確的身高與體重數值。");
+          return;
+        }
+
+        const heightM = h / 100;
+        const bmi = w / (heightM * heightM);
+
+        const now = new Date();
+        const record = {
+          timestamp: now.toISOString(),
+          height: h,
+          weight: w,
+          bmi: bmi,
+        };
+
+        let records = loadRecords();
+        records.push(record);
+        if (records.length > 30) {
+          records = records.slice(records.length - 30);
+        }
+        saveRecords(records);
+        refreshUI(records);
+      }
+
+      recordBtn.addEventListener("click", handleRecord);
+
+      const initialRecords = loadRecords();
+      refreshUI(initialRecords);
+    })();
+  </script>
+</body>
+</html>
