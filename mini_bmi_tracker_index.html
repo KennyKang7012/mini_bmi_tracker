@@ -7,135 +7,239 @@
   <style>
     * {
       box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
       margin: 0;
       padding: 0;
-      background: #f5f7fb;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
+      align-items: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
     }
 
     .container {
-      margin: 24px;
       width: 100%;
       max-width: 960px;
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
-      padding: 24px 24px 32px;
+      margin: 24px;
+      background: rgba(30, 41, 59, 0.78);
+      border-radius: 20px;
+      border: 1px solid rgba(51, 65, 85, 0.5);
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(148, 163, 184, 0.08);
+      padding: 24px 24px 28px;
+      backdrop-filter: blur(22px);
+      border-radius: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.6);
+      padding: 24px 24px 28px;
+      backdrop-filter: blur(18px);
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .title-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 14px;
+      background: conic-gradient(from 160deg, #2563eb, #a855f7, #f97316, #22c55e, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.2rem;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45);
     }
 
     h1 {
-      margin: 0 0 4px;
-      font-size: 1.5rem;
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.02em;
+      color: #f1f5f9;
     }
 
     .subtitle {
-      margin: 0 0 16px;
-      font-size: 0.9rem;
-      color: #6b7280;
+      margin: 2px 0 0;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+
+    .chip {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #1d4ed8;
+      background: rgba(219, 234, 254, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .chip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.15);
+    }
+
+    .form-card {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #1e293b, #334155);
+      border: 1px solid rgba(129, 140, 248, 0.4);
     }
 
     .form-row {
       display: flex;
       flex-wrap: wrap;
       gap: 16px;
-      margin-bottom: 16px;
       align-items: flex-end;
     }
 
     .field {
       flex: 1 1 160px;
-      min-width: 140px;
+      min-width: 150px;
     }
 
     label {
-      display: block;
-      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
       margin-bottom: 4px;
-      color: #374151;
+      color: #4b5563;
+    }
+
+    .unit-pill {
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.18);
+      font-size: 0.7rem;
+      color: #cbd5e1;
+    }
+
+    .input-shell {
+      position: relative;
+    }
+
+    .input-shell::before {
+      content: attr(data-icon);
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      color: #9ca3af;
+      pointer-events: none;
     }
 
     input[type="number"] {
       width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      font-size: 0.95rem;
+      padding: 9px 10px 9px 28px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      font-size: 0.9rem;
       outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      background: rgba(255, 255, 255, 0.9);
+      transition:
+        border-color 0.14s ease,
+        box-shadow 0.14s ease,
+        background 0.14s ease,
+        transform 0.1s ease;
     }
 
     input[type="number"]:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
-    }
-
-    .unit {
-      font-size: 0.8rem;
-      color: #6b7280;
-      margin-left: 4px;
+      border-color: #6366f1;
+      box-shadow:
+        0 0 0 1px rgba(129, 140, 248, 0.35),
+        0 10px 20px rgba(129, 140, 248, 0.25);
+      background: #ffffff;
+      transform: translateY(-0.5px);
     }
 
     button {
-      padding: 10px 18px;
+      padding: 10px 20px;
       border-radius: 999px;
       border: none;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      letter-spacing: 0.02em;
     }
 
     #recordBtn {
-      background: #2563eb;
+      background: linear-gradient(135deg, #4f46e5, #2563eb);
       color: #ffffff;
-      box-shadow: 0 5px 12px rgba(37, 99, 235, 0.35);
-      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+      box-shadow:
+        0 12px 28px rgba(37, 99, 235, 0.6),
+        0 0 0 1px rgba(191, 219, 254, 0.6);
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        filter 0.12s ease;
     }
 
     #recordBtn:hover {
-      background: #1d4ed8;
+      filter: brightness(1.05);
       transform: translateY(-1px);
-      box-shadow: 0 7px 16px rgba(37, 99, 235, 0.45);
+      box-shadow:
+        0 16px 32px rgba(37, 99, 235, 0.75);
     }
 
     #recordBtn:active {
       transform: translateY(0);
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.55);
     }
 
     .current-box {
-      margin-top: 8px;
+      margin-top: 14px;
       padding: 12px 14px;
-      border-radius: 12px;
-      background: #f3f4ff;
-      border: 1px solid #e0e7ff;
-      font-size: 0.9rem;
+      border-radius: 16px;
+      background: rgba(51, 65, 85, 0.55);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      font-size: 0.88rem;
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px 10px;
       align-items: center;
-      justify-content: space-between;
     }
 
     .current-box span {
-      margin-right: 8px;
+      margin-right: 4px;
     }
 
     .badge {
       padding: 4px 10px;
       border-radius: 999px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .badge-normal {
@@ -155,25 +259,34 @@
 
     .section-title {
       margin-top: 24px;
-      margin-bottom: 8px;
-      font-size: 1rem;
+      margin-bottom: 6px;
+      font-size: 0.98rem;
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      color: #0f172a;
     }
 
     .section-title small {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: #9ca3af;
       font-weight: normal;
     }
 
+    .section-pill {
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.04);
+      font-size: 0.7rem;
+      color: #cbd5e1;
+    }
+
     .chart-wrapper {
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.28);
       padding: 12px;
-      background: #f9fafb;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
     }
 
     #bmiChart {
@@ -185,46 +298,146 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 8px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
     }
 
     thead {
-      background: #f3f4f6;
+      background: linear-gradient(90deg, #334155, #1e293b);
     }
 
-    th, td {
+    th,
+    td {
       padding: 6px 8px;
       text-align: left;
       border-bottom: 1px solid #e5e7eb;
       white-space: nowrap;
     }
 
+    th {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #4b5563;
+    }
+
     tbody tr:nth-child(even) {
-      background: #f9fafb;
+      background: rgba(30, 41, 59, 0.55);
+    }
+
+    tbody tr:hover {
+      background: rgba(51, 65, 85, 0.6);
     }
 
     .empty-tip {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #9ca3af;
       margin-top: 4px;
     }
 
-    @media (max-width: 600px) {
+    .footer-hint {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      text-align: right;
+    }
+
+    body.theme-light {
+      background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #e0f2fe 100%);
+    }
+
+    body.theme-light .container {
+      background: rgba(255, 255, 255, 0.92);
+      border-color: rgba(148, 163, 184, 0.25);
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.7);
+    }
+
+    body.theme-light h1 {
+      color: #0f172a;
+    }
+
+    body.theme-light .subtitle {
+      color: #6b7280;
+    }
+
+    body.theme-light .current-box {
+      background: rgba(248, 250, 252, 0.94);
+      border-color: rgba(226, 232, 240, 0.9);
+    }
+
+    body.theme-light .chart-wrapper {
+      background: linear-gradient(135deg, #f9fafb, #eff6ff);
+    }
+
+    body.theme-light thead {
+      background: linear-gradient(90deg, #f1f5f9, #e5e7eb);
+    }
+
+    body.theme-light tbody tr:nth-child(even) {
+      background: #f9fafb;
+    }
+
+    body.theme-light tbody tr:hover {
+      background: #eff6ff;
+    }
+
+    .theme-toggle {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    body.theme-light .theme-toggle {
+      background: rgba(255, 255, 255, 0.95);
+      color: #111827;
+      border-color: rgba(148, 163, 184, 0.6);
+    }
+
+    @media (max-width: 720px) {
       .container {
-        margin: 12px;
-        padding: 16px;
+        margin: 16px;
+        padding: 18px 16px 22px;
+      }
+
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .chip {
+        align-self: flex-start;
+      }
+
+      .form-card {
+        margin-top: 12px;
       }
 
       h1 {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>迷你健康追蹤工具</h1>
-    <p class="subtitle">輸入身高與體重，一鍵計算 BMI 並記錄最近 30 筆歷史資料。</p>
+    <div class="header-row">
+      <div class="title-block">
+        <div class="title-icon">💓</div>
+        <div>
+          <h1>迷你健康追蹤工具</h1>
+          <p class="subtitle">輸入身高與體重，一鍵計算 BMI 並記錄最近 30 筆歷史資料。</p>
+        </div>
+      </div>
+      <button id="themeToggle" type="button" class="theme-toggle">🌙 夜間模式</button>
+    </div>
 
     <div class="form-row">
       <div class="field">
@@ -273,6 +486,7 @@
       "use strict";
 
       const STORAGE_KEY = "mini_bmi_records";
+      const THEME_KEY = "mini_bmi_theme";
 
       const heightInput = document.getElementById("height");
       const weightInput = document.getElementById("weight");
@@ -282,6 +496,7 @@
       const historyEmpty = document.getElementById("historyEmpty");
       const chartEmpty = document.getElementById("chartEmpty");
       const chartCanvas = document.getElementById("bmiChart");
+      const themeToggle = document.getElementById("themeToggle");
       const ctx = chartCanvas.getContext("2d");
 
       function loadRecords() {
@@ -351,7 +566,7 @@
           `<span>身高：${latest.height.toFixed(1)} cm，體重：${latest.weight.toFixed(1)} kg</span>` +
           `<span>目前 BMI：<strong>${latest.bmi.toFixed(2)}</strong></span>` +
           `<span class="badge ${badgeClass}">${bmiClass.label}</span>` +
-          `<span style="flex-basis: 100%; font-size: 0.8rem; color: #6b7280; margin-top: 4px;">${message}</span>`;
+          `<span style="flex-basis: 100%; font-size: 0.8rem; color: #cbd5e1; margin-top: 4px;">${message}</span>`;
       }
 
       function renderHistory(records) {
@@ -497,6 +712,29 @@
         renderChart(records);
       }
 
+      function applyTheme(theme) {
+        if (theme === "light") {
+          document.body.classList.add("theme-light");
+        } else {
+          document.body.classList.remove("theme-light");
+          theme = "dark";
+        }
+
+        if (themeToggle) {
+          if (theme === "light") {
+            themeToggle.textContent = "☀️ 日間模式";
+          } else {
+            themeToggle.textContent = "🌙 夜間模式";
+          }
+        }
+
+        try {
+          localStorage.setItem(THEME_KEY, theme);
+        } catch (e) {
+          console.error("save theme error", e);
+        }
+      }
+
       function handleRecord() {
         const h = parseFloat(heightInput.value);
         const w = parseFloat(weightInput.value);
@@ -528,7 +766,24 @@
 
       recordBtn.addEventListener("click", handleRecord);
 
+      if (themeToggle) {
+        themeToggle.addEventListener("click", function () {
+          const isLight = document.body.classList.contains("theme-light");
+          applyTheme(isLight ? "dark" : "light");
+        });
+      }
+
       const initialRecords = loadRecords();
+      let initialTheme = "dark";
+      try {
+        const stored = localStorage.getItem(THEME_KEY);
+        if (stored === "light" || stored === "dark") {
+          initialTheme = stored;
+        }
+      } catch (e) {
+        console.error("load theme error", e);
+      }
+      applyTheme(initialTheme);
       refreshUI(initialRecords);
     })();
   </script>
